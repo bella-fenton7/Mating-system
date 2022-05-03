@@ -1,0 +1,74 @@
+wBB=1;      
+wBb=0.7;
+wbb=0.7;
+
+sr=1;        
+
+B=0.6;  
+
+
+FB=[1, 0.9;...
+    0.0, 0.3;...
+    0.0, 0.3];
+
+newBB=[1,.5,0;.5,.25,0;0,0,0];
+newBb=[0,.5,1;.5,.5,.5;1,.5,0];
+newbb=[0,0,0;0,.25,.5;0,.5,1];
+
+
+
+Juv=[B^2;2*B*(1-B);(1-B)^2];
+
+
+gens=500;
+gen_traj=Juv';
+
+for i=1:gens
+    
+    
+    M_after_sel=Juv.*[wBB;wBb;wbb];
+    
+  
+    
+    M_after_sel=M_after_sel/sum(M_after_sel);
+    
+    
+    F_adult=Juv;
+    
+  
+    M_adult=sr*M_after_sel;
+    
+    
+    matings=zeros(3);
+    
+    for j=1:5
+        
+        meeting_ratios=F_adult*M_adult';
+        meetings=(meeting_ratios/sum(sum(meeting_ratios)))*min(sum(F_adult),sum(M_adult));
+        
+        killings=meetings.*([1;1;1]*FB(:,1)');
+        
+        meetings=meetings-killings;
+        M_adult=M_adult-sum(killings,1)';
+        
+        new_matings=meetings.*([1;1;1]*FB(:,2)');
+        
+        F_adult=F_adult-sum(new_matings,2);
+        matings=matings+new_matings;
+        
+    end
+    
+    tBB=sum(sum(matings.*newDD));
+    tBb=sum(sum(matings.*newDd));
+    tbb=sum(sum(matings.*newdd));
+    
+    Juv=[tBB;tBb;tbb]/sum([tBB;tBb;tbb]);
+    
+    gen_traj=[gen_traj;Juv'];
+    
+end
+
+
+
+
+
